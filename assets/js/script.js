@@ -166,6 +166,66 @@ $(".list-group").on("blur", "input[type='text']", function() {
     $(this).replaceWith(taskSpan);
 });
 
+$(".card .list-group").sortable({
+  connectWith: $(".card .list-group"),
+  scroll: false,
+  tolerance: "pointer",
+  helper: "clone",
+  activate: function(event) {
+    console.log("activate", this);
+  },
+  deactivate: function(event) {
+    console.log("deactivate", this);
+  },
+  over: function(event) {
+    console.log("over", event.target);
+  },
+  out: function(event){
+    console.log("out", event.target);
+  },
+  update: function(event){
+    var tempArr = [];
+    $(this).children().each(function(){
+      var text = $(this)
+        .find("p")
+        .text()
+        .trim();
+
+        var arrName = $(this)
+        .attr("id")
+        .replace("list-","");
+
+        task[arrName]= tempArr;
+        saveTasks();
+
+      var date = $(this)
+        .find("span")
+        .text()
+        .trim();
+
+        tempArr.push({
+          text: text,
+          date: date
+        });
+    });
+    
+  }
+});
+
+$("#trash").droppable({
+  accept: ".card .list-group-item",
+  tolerance: "touch",
+  drop: function(event, ui){
+    ui.draggable.remove();
+  },
+  over: function(event, ui) {
+    console.log("over");
+  },
+  out: function(event, ui){
+    console.log("out");
+  }
+});
+
 // remove all tasks
 $("#remove-tasks").on("click", function() {
   for (var key in tasks) {
